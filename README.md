@@ -4,11 +4,13 @@ peerflix-server
 [![NPM Version][npm-image]][npm-url]
 [![NPM Downloads][downloads-image]][downloads-url]
 [![Node.js Version][node-version-image]][node-version-url]
-[![Build Status][travis-image]][travis-url]
+<!-- [![Build Status][travis-image]][travis-url] -->
 
 <img src="https://cdn.jsdelivr.net/gh/asapach/peerflix-server@master/app/images/logo.svg" alt="logo" height="256">
 
 Streaming torrent client for node.js with web ui.
+Based on server application of peerflix [from asapach](https://github.com/asapach/peerflix-server). 
+Since docker image was not being updated to latest version of peerflix, the docker image [from onisuly](https://github.com/onisuly/docker-peerflix-server) is used as a basis.
 
 ![screen capture](https://cdn.jsdelivr.net/gh/asapach/peerflix-server@master/capture.gif)
 
