@@ -35,7 +35,7 @@ jobs:
           docker buildx build \
             --cache-from "type=local,src=/tmp/.buildx-cache" \
             --cache-to "type=local,dest=/tmp/.buildx-cache" \
-            --platform linux/arm64/v8,linux/amd64  \
+            --platform linux/amd64  \
             --output "type=image,push=false" \
             --tag ronnieonthehub/peerflix-server:latest \
             --file ./Dockerfile ./
@@ -44,7 +44,7 @@ jobs:
         run: |
           docker buildx build \
             --cache-from "type=local,src=/tmp/.buildx-cache" \
-            --platform linux/arm64/v8,linux/amd64  \
+            --platform linux/amd64  \
             --output "type=image,push=true" \
             --tag ronnieonthehub/peerflix-server:latest \
             --file ./Dockerfile ./
