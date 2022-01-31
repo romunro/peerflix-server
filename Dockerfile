@@ -38,8 +38,19 @@ VOLUME /tmp/torrent-stream /app/config
 
 USER node
 
-EXPOSE 6881 9000
+ARG RUN_DEP="squid openrc apache2-utils"
 
-ENTRYPOINT ["/usr/local/bin/npm", "start"]
-CMD ["--no-update-notifier"]
+USER root
 
+RUN apk add --no-cache $RUN_DEP
+
+COPY squid_auth.conf /etc/squid/squid_auth.conf
+COPY squid_basic.conf /etc/squid/squid_basic.conf
+
+COPY startup.sh /script/startup.sh
+
+RUN chmod +x /script/startup.sh
+
+EXPOSE 9000
+
+CMD ["/script/startup.sh"]
