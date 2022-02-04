@@ -3,8 +3,9 @@ peerflix-server
 
 [![NPM Version][npm-image]][npm-url]
 [![NPM Downloads][downloads-image]][downloads-url]
-[![Node.js Version][node-version-image]][node-version-url]
-<!-- [![Build Status][travis-image]][travis-url] -->
+[![Docker Build Status](https://img.shields.io/github/workflow/status/romunro/peerflix-server/buildx-weekly)](https://github.com/romunro/peerflix-server) 
+[![Docker Stars](https://img.shields.io/docker/stars/ronnieonthehub/peerflix-server.svg)](https://github.com/romunro/peerflix-server) 
+[![Docker Pulls](https://img.shields.io/docker/pulls/ronnieonthehub/peerflix-server.svg)](https://github.com/romunro/peerflix-server)
 
 <img src="https://cdn.jsdelivr.net/gh/asapach/peerflix-server@master/app/images/logo.svg" alt="logo" height="256">
 
@@ -16,76 +17,46 @@ Since docker image was not being updated to latest version of peerflix, the dock
 
 Based on [torrent-stream](https://github.com/mafintosh/torrent-stream), inspired by [peerflix](https://github.com/mafintosh/peerflix).
 
-## Usage
+This Dockerfile build an image for [peerflix-server](https://github.com/asapach/peerflix-server) with password protection capability.
 
-1. `npm install -g peerflix-server`
-1. `peerflix-server`
-1. Open your browser at [http://localhost:9000/](http://localhost:9000/)
-1. Enjoy!
+## Quick Start
 
-## Configuration
-
-You can configure the application using `config.json` file (doesn't exist by default).
-The [options](https://github.com/mafintosh/torrent-stream#full-api) are passed to all torrent-stream instances.
-Here's an example that overrides the defaults:
-
-```json
-{
-  "connections": 50,
-  "tmp": "/mnt/torrents"
-}
+```shell
+docker run -d --name peerflix-server \
+-p 9000:9000 \
+-v /your/path/to/torrent-stream:/tmp/torrent-stream \
+ronnieonthehub/peerflix-server
 ```
 
-The application stores its current state (list of torrents) in `torrents.json`
+## Enable Password Protection
 
-You can define configuration and state files location by `PEERFLIX_CONFIG_PATH` environmnt variable. Default value is `$HOME/.config/peerflix-server/`.
-
-You can also change the default port by setting `PORT` environment variable:
-
-```sh
-PORT=1234 peerflix-server
-
-# or on windows
-SET PORT=1234
-peerflix-server
+```shell
+docker run -d --name peerflix-server \
+-p 9000:9000 \
+-e SECURE=true \
+-e USERNAME=your_name \
+-e PASSWORD=your_password \
+-v /your/path/to/torrent-stream:/tmp/torrent-stream \
+ronnieonthehub/peerflix-server
 ```
 
+If you want to add multiple users, your can generate .htpasswd file [here](http://www.htaccesstools.com/htpasswd-generator/) and mount it to your container.
 
-## Daemon
-
-If you want to run peerflix-server as a daemon, you can do it using [forever](https://github.com/foreverjs/forever):
-
-```sh
-npm install -g forever
+```shell
+docker run -d --name peerflix-server \
+-p 9000:9000 \
+-v /your/path/to/.htpasswd:/etc/squid/users \
+-v /your/path/to/torrent-stream:/tmp/torrent-stream \
+ronnieonthehub/peerflix-server
 ```
 
-```sh
-forever start $(which peerflix-server)
-```
+---
 
-You might also want to enable logging -- see the [docs](https://github.com/foreverjs/forever#command-line-usage).
+Read [Peerflix Server Readme](https://github.com/asapach/peerflix-server/blob/master/README.md) for more information.
 
-## FAQ
-
-[How do I add password protection?](https://github.com/asapach/peerflix-server/wiki/How-to-put-a-password-on-peerflix-server)
-
-## Development
-
-See [Development.md](Development.md)
-
-## REST API
-
-See [REST.md](REST.md)
-
-## Docker
-
-See [Docker.md](Docker.md)
-
-[npm-image]: https://img.shields.io/npm/v/peerflix-server.svg?style=flat
+[npm-image]: https://img.shields.io/npm/v/peerflix-server?label=peerflix%20version
 [npm-url]: https://npmjs.org/package/peerflix-server
 [node-version-image]: https://img.shields.io/node/v/peerflix-server.svg?style=flat
 [node-version-url]: http://nodejs.org/download/
-[travis-image]: https://img.shields.io/travis/asapach/peerflix-server.svg?style=flat
-[travis-url]: https://travis-ci.org/asapach/peerflix-server
 [downloads-image]: https://img.shields.io/npm/dm/peerflix-server.svg?style=flat
 [downloads-url]: https://npmjs.org/package/peerflix-server
