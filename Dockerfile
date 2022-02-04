@@ -1,56 +1,56 @@
 # Build peerflix server
-FROM node:14-alpine as build
+FROM node:17-alpine
 
-RUN apk --no-cache add git && \
-    npm install -g grunt bower 
+RUN apk --no-cache add git 
 
-WORKDIR /app
-COPY package*.json ./
+WORKDIR /usr/local/bin
 
-COPY app app
-COPY server server
-COPY bower.json .
-COPY .bowerrc .
-COPY Gruntfile.js .
-COPY karma.conf.js .
+#ENV PORT = 9000
 
-RUN npm install
-RUN bower --allow-root install
-RUN grunt build
+RUN npm install -g peerflix-server
 RUN npm prune --production
 
-RUN mkdir release && \
-    cp -r /app/node_modules release/node_modules && \
-    cp -r /app/dist release/dist && \
-    cp -r /app/server release/server && \
-    cp -r package.json release/
+VOLUME /root/.config/peerflix-server /mnt/torrents/torrent-stream
+COPY config.json $PEERFLIX_CONFIG_PATH/config.json
 
-# Create final image
-FROM node:14-alpine
-ENV PEERFLIX_CONFIG_PATH /app/config
+CMD [ "peerflix-server" ]
+# RUN bower --allow-root install
+# RUN grunt build
+###Comment from here
+# RUN npm prune --production
 
-RUN apk --no-cache add ffmpeg
+# RUN mkdir release && \
+#     cp -r /app/node_modules release/node_modules && \
+#     cp -r /app/dist release/dist && \
+#     cp -r /app/server release/server && \
+#     cp -r package.json release/
 
-WORKDIR /app
-COPY --from=build /app/release ./
+# # Create final image
+# FROM node:14-alpine
+# ENV PEERFLIX_CONFIG_PATH /app/config
 
-VOLUME /tmp/torrent-stream /app/config
+# RUN apk --no-cache add ffmpeg
 
-USER node
+# WORKDIR /app
+# COPY --from=build /app/release ./
 
-ARG RUN_DEP="squid openrc apache2-utils"
+# VOLUME /tmp/torrent-stream /app/config
 
-USER root
+# USER node
 
-RUN apk add --no-cache $RUN_DEP
+# ARG RUN_DEP="squid openrc apache2-utils"
 
-COPY squid_auth.conf /etc/squid/squid_auth.conf
-COPY squid_basic.conf /etc/squid/squid_basic.conf
+# USER root
 
-COPY startup.sh /script/startup.sh
+# RUN apk add --no-cache $RUN_DEP
 
-RUN chmod +x /script/startup.sh
+# COPY squid_auth.conf /etc/squid/squid_auth.conf
+# COPY squid_basic.conf /etc/squid/squid_basic.conf
 
-EXPOSE 9000
+# COPY startup.sh /script/startup.sh
 
-CMD ["/script/startup.sh"]
+# RUN chmod +x /script/startup.sh
+
+# EXPOSE 9000
+
+# CMD ["/script/startup.sh"]
