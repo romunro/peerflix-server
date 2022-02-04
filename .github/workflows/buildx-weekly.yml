@@ -1,6 +1,8 @@
 name: buildx-weekly
 
 on:
+  push:
+     branches: master
   workflow_dispatch:
   schedule:
      - cron:  '30 6 * * 2,4,6'
